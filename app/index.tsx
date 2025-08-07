@@ -1,10 +1,12 @@
+import { Link, router } from 'expo-router';
 import React from 'react';
 import {
   StyleSheet,
   Text,
   View,
   Image,
-  ScrollView
+  ScrollView,
+  TouchableOpacity
 } from 'react-native';
 
 export default function App() {
@@ -14,7 +16,14 @@ export default function App() {
       
       {/* Cabeçalho: Logo Fala Campus à esquerda, Login à direita */}
       <View style={styles.header}>
-        <Image source={require('../../assets/images/Fala_campus-logo.png')} style={styles.logo} />
+        <Image source={require('../assets/images/Fala_campus-logo.png')} style={styles.logo} />
+        <TouchableOpacity
+          onPress={()=>router.push('/screens/login')}
+          >
+          <Text>Login</Text>
+          
+          
+        </TouchableOpacity>
       </View>
 
       {/* Texto introdutório em fundo claro */}
@@ -29,7 +38,7 @@ export default function App() {
       </View>
 
       {/* Imagem da mulher posicionada entre o texto introdutório e o contêiner verde */}
-      <Image source={require('../../assets/images/img-01.png')} style={styles.womanImage} resizeMode="contain" />
+      <Image source={require('../assets/images/img-01.png')} style={styles.womanImage} resizeMode="contain" />
 
       {/* Contêiner verde musgo com texto */}
       <View style={styles.darkGreenContainer}>

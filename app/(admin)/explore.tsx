@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Yup from "yup";
 import { Formik } from "formik";
 import DropDownPicker from 'react-native-dropdown-picker';
+const { width } = Dimensions.get('window');
 
 
 

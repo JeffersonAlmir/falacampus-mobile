@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, ScrollView } from "react-native";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import axios, { AxiosError } from "axios";
+
+import Config from 'react-native-config';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 const validationSchema = Yup.object().shape({
   matricula: Yup.string()
@@ -11,7 +16,46 @@ const validationSchema = Yup.object().shape({
   senha:Yup.string().required("Digite sua senha.")
 });
 
+
+
 const LoginScreen = () => {
+
+
+
+  const handleLogin = async ( values:{matricula:string, senha:string}) =>{
+
+    const login ={
+      username:values.matricula,
+      password: values.senha
+    }
+    try {
+      const response = await axios.post('http://localhost:8080/api/login' ,login)
+
+      const token = response.data.token;
+      const user = response.data.user;
+      const authority = user.roles[0].authority;
+      
+      await AsyncStorage.setItem('auth_token', token);
+      
+      console.log('Login success:', response.data);
+      if (authority === 'ADMIN') {
+      router.replace({
+        pathname: '../(admin)/feed' ,
+        params: { userData: JSON.stringify(user) } 
+      });
+    } else {
+      router.replace({
+        pathname: '../(users)/feed',
+        params: { userData: JSON.stringify(user) } 
+      });
+    }
+     
+    } catch (error) {
+      
+      console.error('Login failed:', AxiosError);
+    }
+  }
+  
 
   return (
     
@@ -32,7 +76,7 @@ const LoginScreen = () => {
             senha:""}
           }
           validationSchema={validationSchema}
-          onSubmit={(values) =>console.log(values)}
+          onSubmit={(values) =>handleLogin(values)}
         >
           {({
           handleChange,
