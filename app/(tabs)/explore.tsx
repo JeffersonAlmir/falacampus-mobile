@@ -88,31 +88,37 @@ const SearchComments = () => {
 
   // Função para pesquisar e filtrar comentários
   const handleFilterComments = (values) => {
-    console.log("Filtrando comentários por tipo:", values.type);
     const { title, type } = values;
 
-    // Normaliza o valor do tipo de comentário para garantir a correspondência
-    const normalizedType = type.trim();
+    const normalizedType = type.trim().toLowerCase();
+    const normalizedTitle = title.trim().toLowerCase();
 
-    let filtered = [];
-    if (normalizedType === "") { // Se "Todos os tipos" for selecionado (valor vazio)
-      filtered = comments;
-      Alert.alert(
-        "Pesquisar",
-        "Mostrando todos os comentários."
-      );
-    } else {
-      filtered = comments.filter(comment => {
-        // Garante que o comment.type também seja normalizado para comparação
-        return comment.type && comment.type.trim() === normalizedType;
-      });
-      Alert.alert(
-        "Pesquisar",
-        `Comentários filtrados por tipo: ${type}`
+    let filtered = comments;
+
+    // Filtrar por tipo se for diferente de vazio
+    if (normalizedType !== "") {
+      filtered = filtered.filter(comment => 
+        comment.type?.trim().toLowerCase() === normalizedType
       );
     }
+
+    // Filtrar por título ou mensagem
+    if (normalizedTitle !== "") {
+      filtered = filtered.filter(comment =>
+        comment.title?.toLowerCase().includes(normalizedTitle) ||
+        comment.message?.toLowerCase().includes(normalizedTitle)
+      );
+    }
+
+    if (filtered.length === 0) {
+      Alert.alert("Nenhum resultado", "Nenhum comentário corresponde aos critérios.");
+    } else {
+      Alert.alert("Pesquisa concluída", `Foram encontrados ${filtered.length} comentários.`);
+    }
+
     setFilteredComments(filtered);
   };
+
 
   // Função para atualizar a lista de comentários
   const onRefresh = () => {
